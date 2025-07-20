@@ -1,3 +1,12 @@
 {
-  "veiculos": []
+  "veiculos": [
+    {
+      "id": "4226",
+      "placa": "AXR-3E64",
+      "marca": "Chrevrolet",
+      "modelo": "Onix",
+      "ano": 2013,
+      "cor": "Azul"
+    }
+  ]
 }

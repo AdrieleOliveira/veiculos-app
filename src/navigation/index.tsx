@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
-import AddVeiculoScreen from "../screens/AddVeiculoScreen";
+import {AddVeiculoScreen} from "../screens/AddVeiculoScreen";
 import EditVeiculoScreen from "../screens/EditVeiculoScreen";
 import DetailScreen from "../screens/DetailScreen";
 
