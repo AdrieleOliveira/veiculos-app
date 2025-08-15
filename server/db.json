@@ -1,3 +1,28 @@
 {
-  "veiculos": []
+  "veiculos": [
+    {
+      "id": "f106",
+      "placa": "QWR1A23",
+      "marca": "Chevrolet",
+      "modelo": "Onix",
+      "ano": 2021,
+      "cor": "Prata"
+    },
+    {
+      "id": "97ba",
+      "placa": "ZYX9H45",
+      "marca": "Hyundai",
+      "modelo": "HB20",
+      "ano": 2022,
+      "cor": "Preto"
+    },
+    {
+      "id": "0294",
+      "placa": "MNB3C72",
+      "marca": "Toyota",
+      "modelo": "Corolla",
+      "ano": 2022,
+      "cor": "Cinza"
+    }
+  ]
 }

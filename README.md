@@ -1,5 +1,12 @@
 # 🚗 Gerenciador de Veículos
 
+<p>
+    <a href="https://github.com/AdrieleOliveira/veiculos-app">Link do Gitbub</a>
+</p>
+<p>
+    <a href="https://drive.google.com/file/d/1MwftB3R3e99Glm_PDNKr_dttRc2S8I8A/view?usp=sharing">Link do video</a>
+</p>
+
 <p align="center">
   <img src="https://img.shields.io/badge/React-19.0.0-61DAFB?style=for-the-badge&logo=react" alt="React" />
   <img src="https://img.shields.io/badge/TypeScript-5.8.3-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript" />
