@@ -3,28 +3,26 @@ import { View, Text } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
-import { AddVeiculoScreen } from "../screens/AddVeiculoScreen";
-import EditVeiculoScreen from "../screens/EditVeiculoScreen";
+import { VeiculoFormScreen } from "../screens/VeiculoFormScreen";
 import DetailScreen from "../screens/DetailScreen";
 import { Ionicons } from "@expo/vector-icons";
 
 export type RootStackParamList = {
     Home: undefined;
-    Add: undefined;
-    Edit: { id: number };
+    VeiculoForm: { id?: number };
     Detail: { id: number };
+    Edit: { id: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigator() {
-    // @ts-ignore
     return (
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{
-                    headerStyle: { backgroundColor: '#1e1e1e' },   // header cinza/escuro
-                    headerTintColor: '#fff',                    // cor do botão back/ícones
+                    headerStyle: { backgroundColor: '#1e1e1e' },
+                    headerTintColor: '#fff',
                     headerTitleAlign: 'center',
                     headerTitle: () => (
                         <Text style={{
@@ -39,9 +37,9 @@ export default function AppNavigator() {
                 }}
             >
                 <Stack.Screen name="Home" component={HomeScreen}/>
-                <Stack.Screen name="Add" component={AddVeiculoScreen} />
-                <Stack.Screen name="Edit" component={EditVeiculoScreen} />
+                <Stack.Screen name="VeiculoForm" component={VeiculoFormScreen} />
                 <Stack.Screen name="Detail" component={DetailScreen} />
+                <Stack.Screen name="Edit" component={VeiculoFormScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     );

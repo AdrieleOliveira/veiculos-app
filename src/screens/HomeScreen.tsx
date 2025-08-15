@@ -4,7 +4,7 @@ import VeiculoItem from "../components/VeiculoItem";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../navigation";
 import {useFocusEffect} from "@react-navigation/native";
-import { View, TextInput, Pressable, StyleSheet, FlatList } from 'react-native';
+import { View, TextInput, Pressable, StyleSheet, FlatList, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -42,7 +42,7 @@ export default function HomeScreen({ navigation }: Props) {
                 v.modelo,
                 v.cor,
                 v.placa,
-                v.ano, // number → string
+                v.ano,
             ].map(normalize).join(" ");
 
             return tokens.every((t) => haystack.includes(t));
@@ -63,7 +63,7 @@ export default function HomeScreen({ navigation }: Props) {
                 </View>
 
                 <Pressable
-                    onPress={() => navigation.navigate('Add')}
+                    onPress={() => navigation.navigate('VeiculoForm')}
                     style={({ pressed }) => [styles.addBtn, pressed && { opacity: 0.9, transform: [{ scale: 0.98 }] }]}
                     hitSlop={8}
                     accessibilityLabel="Adicionar veículo"
@@ -80,7 +80,16 @@ export default function HomeScreen({ navigation }: Props) {
                     <VeiculoItem
                         veiculo={item}
                         onPress={() => navigation.navigate('Detail', { id: item.id! })}
-                        onDelete={async () => { await deleteVeiculo(item.id!); load(); }}
+                        onEdit={() => navigation.navigate('VeiculoForm', { id: item.id! })}
+                        onDelete={async () => {
+                            try {
+                                await deleteVeiculo(item.id!); 
+                                load();
+                            } catch (error) {
+                                console.error('Erro ao excluir veículo:', error);
+                                Alert.alert('Erro', 'Não foi possível excluir o veículo.');
+                            }
+                        }}
                     />
                 )}
                 ListFooterComponent={() => <View style={{ height: 0 }} />}

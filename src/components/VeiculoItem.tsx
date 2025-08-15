@@ -1,23 +1,41 @@
 import React from 'react';
-import { Pressable, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { Pressable, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Veiculo } from '../services/api';
 
 interface Props {
     veiculo: Veiculo;
     onPress: () => void;
+    onEdit: () => void;
     onDelete: () => void;
 }
 
-export default function VeiculoItem({ veiculo, onPress, onDelete }: Props) {
+export default function VeiculoItem({ veiculo, onPress, onEdit, onDelete }: Props) {
+    const handleDelete = () => {
+        Alert.alert(
+            'Confirmação',
+            `Deseja excluir o veículo ${veiculo.marca} ${veiculo.modelo}?`,
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel'
+                },
+                {
+                    text: 'Excluir',
+                    onPress: onDelete,
+                    style: 'destructive'
+                },
+            ],
+            { cancelable: true }
+        );
+    };
+
     return (
         <Pressable style={({ pressed }) => [styles.card, pressed && styles.cardPressed]} onPress={onPress}>
-            {/* ícone à esquerda */}
             <View style={styles.leftIcon}>
                 <MaterialCommunityIcons name="car-outline" size={22} color="#2c3e50" />
             </View>
 
-            {/* conteúdo */}
             <View style={styles.body}>
                 <Text style={styles.title}>{veiculo.marca} {veiculo.modelo}</Text>
 
@@ -36,13 +54,18 @@ export default function VeiculoItem({ veiculo, onPress, onDelete }: Props) {
                 </View>
             </View>
 
-            {/* deletar */}
-            <TouchableOpacity style={styles.deleteBtn} onPress={onDelete} hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}>
-                <MaterialCommunityIcons name="trash-can-outline" size={18} color="#fff" />
-            </TouchableOpacity>
-        </Pressable>
+            <View style={styles.actionButtons}>
+                <TouchableOpacity style={styles.editBtn} onPress={onEdit} hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+                    <MaterialCommunityIcons name="pencil-outline" size={18} color="#fff" />
+                </TouchableOpacity>
 
-    )
+
+                <TouchableOpacity style={styles.deleteBtn} onPress={onDelete} hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}>
+                    <MaterialCommunityIcons name="trash-can-outline" size={18} color="#fff" />
+                </TouchableOpacity>
+            </View>
+        </Pressable>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -117,8 +140,20 @@ const styles = StyleSheet.create({
         color: '#1f3158',
     },
 
+    actionButtons: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+
+    editBtn: {
+        marginLeft: 8,
+        backgroundColor: '#3B82F6',
+        borderRadius: 50,
+        padding: 8,
+    },
+
     deleteBtn: {
-        marginLeft: 12,
+        marginLeft: 8,
         backgroundColor: '#e11d48',
         borderRadius: 50,
         padding: 8,

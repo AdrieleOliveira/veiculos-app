@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View,
     Text,
     TextInput,
@@ -7,14 +7,15 @@ import { View,
     Alert,
     ScrollView,
     KeyboardAvoidingView,
-    Platform
+    Platform,
+    ActivityIndicator
 } from 'react-native';
-import { createVeiculo, Veiculo } from '../services/api';
+import { createVeiculo, Veiculo, getVeiculo, updateVeiculo } from '../services/api';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Add'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'VeiculoForm'>;
 
 type RowProps = {
     icon: React.ComponentProps<typeof Ionicons>['name'];
@@ -34,7 +35,7 @@ const InputRow = React.memo(function InputRow({
                 style={styles.input}
                 placeholder={placeholder}
                 placeholderTextColor="#9CA3AF"
-                value={value}                // sempre string
+                value={value}
                 onChangeText={onChangeText}
                 keyboardType={keyboardType}
             />
@@ -42,7 +43,9 @@ const InputRow = React.memo(function InputRow({
     );
 });
 
-export function AddVeiculoScreen({navigation}: Props) {
+export function VeiculoFormScreen({navigation, route}: Props) {
+    const [isLoading, setIsLoading] = useState(false);
+
     const [form, setForm] = useState<Veiculo>({
         placa: '',
         marca: '',
@@ -52,6 +55,30 @@ export function AddVeiculoScreen({navigation}: Props) {
     });
 
     const [saving, setSaving] = useState(false);
+
+    const isEditing = route.params?.id !== undefined;
+    const veiculoId = route.params?.id;
+
+    useEffect(() => {
+        async function loadVeiculo() {
+            if (isEditing && veiculoId) {
+                try {
+                    setIsLoading(true);
+                    const { data } = await getVeiculo(veiculoId);
+                    setForm(data);
+
+                } catch (error) {
+                    console.error('Erro ao carregar veículo:', error);
+                    Alert.alert('Erro', 'Não foi possível carregar os dados do veículo.');
+                    navigation.goBack();
+                } finally {
+                    setIsLoading(false);
+                }
+            }
+        }
+
+        loadVeiculo();
+    }, [isEditing, veiculoId]);
 
     const invalid =
         !form.placa || !form.marca || !form.modelo || !form.cor || !form.ano;
@@ -63,13 +90,27 @@ export function AddVeiculoScreen({navigation}: Props) {
 
         try {
             setSaving(true);
-            const res = await createVeiculo(form);
-            console.log('Veículo criado com sucesso:', res.data);
-            navigation.goBack();
+
+            if (isEditing) {
+                const res = await updateVeiculo(veiculoId!, form);
+                console.log('Veículo atualizado com sucesso!!!!:', res.data);
+
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Home' }],
+                });
+            } else {
+                const res = await createVeiculo(form);
+                console.log('Veículo criado com sucesso:', res.data);
+
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Home' }],
+                });
+            }
         } catch (error) {
-            console.error('Erro ao criar veículo:', error);
-            Alert.alert('Erro', 'Falha ao salvar o veículo.');
-        } finally {
+            console.error(`Erro ao ${isEditing ? 'atualizar' : 'criar'} veículo:`, error);
+            Alert.alert('Erro', `Falha ao ${isEditing ? 'atualizar' : 'salvar'} o veículo.`);
             setSaving(false);
         }
     };
@@ -79,15 +120,21 @@ export function AddVeiculoScreen({navigation}: Props) {
             style={{ flex: 1, backgroundColor: '#F8FAFC' }}
             behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
-            <ScrollView contentContainerStyle={styles.container}>
-                <Text style={styles.pageTitle}>
-                    <MaterialCommunityIcons
-                        name="car-outline"
-                        size={20}
-                        color="#111"
-                    />{' '}
-                    Novo Veículo
-                </Text>
+            {isLoading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#16A34A" />
+                    <Text style={styles.loadingText}>Carregando...</Text>
+                </View>
+            ) : (
+                <ScrollView contentContainerStyle={styles.container}>
+                    <Text style={styles.pageTitle}>
+                        <MaterialCommunityIcons
+                            name="car-outline"
+                            size={20}
+                            color="#111"
+                        />{' '}
+                        {isEditing ? 'Editar Veículo' : 'Novo Veículo'}
+                    </Text>
 
                 <InputRow
                     icon="car-outline"
@@ -132,7 +179,6 @@ export function AddVeiculoScreen({navigation}: Props) {
                     />
                 </View>
 
-                {/* Botão salvar */}
                 <Pressable
                     onPress={onSave}
                     disabled={invalid || saving}
@@ -149,7 +195,8 @@ export function AddVeiculoScreen({navigation}: Props) {
                         {saving ? 'SALVANDO...' : 'SALVAR'}
                     </Text>
                 </Pressable>
-            </ScrollView>
+                </ScrollView>
+            )}
         </KeyboardAvoidingView>
     );
 }
@@ -158,6 +205,16 @@ const styles = StyleSheet.create({
     container: {
         padding: 16,
         paddingBottom: 24,
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: '#4B5563',
     },
     pageTitle: {
         fontSize: 18,

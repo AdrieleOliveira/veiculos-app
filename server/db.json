@@ -1,28 +1,3 @@
 {
-  "veiculos": [
-    {
-      "id": "4226",
-      "placa": "AXR-3E64",
-      "marca": "Chrevrolet",
-      "modelo": "Onix",
-      "ano": 2013,
-      "cor": "Azul"
-    },
-    {
-      "id": "51f8",
-      "placa": "AAAA-1234",
-      "marca": "Hyndai",
-      "modelo": "HB20S",
-      "ano": 2018,
-      "cor": "Prata"
-    },
-    {
-      "id": "0d75",
-      "placa": "BBBB-1234",
-      "marca": "FORD",
-      "modelo": "KA",
-      "ano": 2025,
-      "cor": "Vermelho"
-    }
-  ]
+  "veiculos": []
 }
